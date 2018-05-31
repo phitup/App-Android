@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "428251907741",
+    "firebase_url": "https://chatrealtime-d77c6.firebaseio.com",
+    "project_id": "chatrealtime-d77c6",
+    "storage_bucket": "chatrealtime-d77c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428251907741:android:d21f226fbd6741b7",
+        "android_client_info": {
+          "package_name": "com.chatrealtime.chatrealtime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "428251907741-7bmacu6252r66q01v88u6gi7hmb0lamm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chatrealtime.chatrealtime",
+            "certificate_hash": "483589e274f76a20d051535d0304bd0eba97df94"
+          }
+        },
+        {
+          "client_id": "428251907741-0jfu0vj2tvq884hok2rol7lg5iekde44.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu2xUwy2SY6olcpnA14yABqjvhlEeZXNc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "428251907741-0jfu0vj2tvq884hok2rol7lg5iekde44.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
