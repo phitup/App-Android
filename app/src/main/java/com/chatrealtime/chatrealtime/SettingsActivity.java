@@ -44,26 +44,44 @@ public class SettingsActivity extends AppCompatActivity {
     private DatabaseReference mUserDatabase;
     private FirebaseUser mCurrentUser;
 
+
+    //Android Layout
+
     private CircleImageView mDisplayImage;
-    private TextView mName , mStatus;
-    private Button mStatusBtn , mImageBtn;
+    private TextView mName;
+    private TextView mStatus;
+
+    private Button mStatusBtn;
+    private Button mImageBtn;
+
 
     private static final int GALLERY_PICK = 1;
 
+    // Storage Firebase
     private StorageReference mImageStorage;
 
     private ProgressDialog mProgressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        AnhXa();
+        mDisplayImage =  findViewById(R.id.settings_image);
+        mName =  findViewById(R.id.settings_name);
+        mStatus =  findViewById(R.id.settings_status);
+
+        mStatusBtn =  findViewById(R.id.settings_status_btn);
+        mImageBtn =  findViewById(R.id.settings_image_btn);
+
+        mImageStorage = FirebaseStorage.getInstance().getReference();
 
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         String current_uid = mCurrentUser.getUid();
+
+
 
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(current_uid);
         mUserDatabase.keepSynced(true);
@@ -81,8 +99,11 @@ public class SettingsActivity extends AppCompatActivity {
                 mStatus.setText(status);
 
                 if(!image.equals("default")) {
-                    //Picasso.with(SettingsActivity.this).load(image).placeholder(R.drawable.default_user).into(mDisplayImage);
-                    Picasso.with(SettingsActivity.this).load(image).networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.default_user).into(mDisplayImage, new Callback() {
+
+                    //Picasso.with(SettingsActivity.this).load(image).placeholder(R.drawable.default_avatar).into(mDisplayImage);
+
+                    Picasso.with(SettingsActivity.this).load(image).networkPolicy(NetworkPolicy.OFFLINE)
+                            .placeholder(R.drawable.default_user).into(mDisplayImage, new Callback() {
                         @Override
                         public void onSuccess() {
 
@@ -95,7 +116,10 @@ public class SettingsActivity extends AppCompatActivity {
 
                         }
                     });
+
                 }
+
+
             }
 
             @Override
@@ -104,30 +128,42 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+
         mStatusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 String status_value = mStatus.getText().toString();
-                Intent status_intent = new Intent(SettingsActivity.this,StatusActivity.class);
-                status_intent.putExtra("status_value" , status_value);
+
+                Intent status_intent = new Intent(SettingsActivity.this, StatusActivity.class);
+                status_intent.putExtra("status_value", status_value);
                 startActivity(status_intent);
+
             }
         });
+
 
         mImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
                 Intent galleryIntent = new Intent();
                 galleryIntent.setType("image/*");
                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
 
-                startActivityForResult(Intent.createChooser(galleryIntent , "SELECT IMAGE"), GALLERY_PICK);
+                startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
 
-//                CropImage.activity()
-//                        .setGuidelines(CropImageView.Guidelines.ON)
-//                        .start(SettingsActivity.this);
+
+                /*
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(SettingsActivity.this);
+                        */
+
             }
         });
+
 
     }
 
@@ -136,27 +172,39 @@ public class SettingsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == GALLERY_PICK && resultCode == RESULT_OK){
+
             Uri imageUri = data.getData();
+
             CropImage.activity(imageUri)
+                    .setAspectRatio(1, 1)
+                    .setMinCropWindowSize(500, 500)
                     .start(this);
+
+            //Toast.makeText(SettingsActivity.this, imageUri, Toast.LENGTH_LONG).show();
 
         }
 
+
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
             if (resultCode == RESULT_OK) {
 
+
                 mProgressDialog = new ProgressDialog(SettingsActivity.this);
-                mProgressDialog.setTitle("Uploading Image ...");
-                mProgressDialog.setMessage("Plesae wait");
+                mProgressDialog.setTitle("Uploading Image...");
+                mProgressDialog.setMessage("Please wait while we upload and process the image.");
                 mProgressDialog.setCanceledOnTouchOutside(false);
                 mProgressDialog.show();
 
+
                 Uri resultUri = result.getUri();
 
-                final File thumb_filePath = new File(resultUri.getPath());
+                File thumb_filePath = new File(resultUri.getPath());
 
                 String current_user_id = mCurrentUser.getUid();
+
 
                 Bitmap thumb_bitmap = new Compressor(this)
                         .setMaxWidth(200)
@@ -165,82 +213,98 @@ public class SettingsActivity extends AppCompatActivity {
                         .compressToBitmap(thumb_filePath);
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                thumb_bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                thumb_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 final byte[] thumb_byte = baos.toByteArray();
+
 
                 StorageReference filepath = mImageStorage.child("profile_images").child(current_user_id + ".jpg");
                 final StorageReference thumb_filepath = mImageStorage.child("profile_images").child("thumbs").child(current_user_id + ".jpg");
 
+
+
                 filepath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
                         if(task.isSuccessful()){
-                            final String downloadUrl = task.getResult().getDownloadUrl().toString();
+
+                            final String download_url = task.getResult().getDownloadUrl().toString();
 
                             UploadTask uploadTask = thumb_filepath.putBytes(thumb_byte);
                             uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                 @Override
-                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> thumb_task) {
 
-                                    String thumb_downloadUrl = task.getResult().getDownloadUrl().toString();
+                                    String thumb_downloadUrl = thumb_task.getResult().getDownloadUrl().toString();
 
-                                    if(task.isSuccessful()){
+                                    if(thumb_task.isSuccessful()){
 
                                         Map update_hashMap = new HashMap();
-                                        update_hashMap.put("image" , downloadUrl);
-                                        update_hashMap.put("thumb_image" , thumb_downloadUrl);
+                                        update_hashMap.put("image", download_url);
+                                        update_hashMap.put("thumb_image", thumb_downloadUrl);
 
                                         mUserDatabase.updateChildren(update_hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
+
                                                 if(task.isSuccessful()){
+
                                                     mProgressDialog.dismiss();
-                                                    Toast.makeText(SettingsActivity.this, "Success Uploading", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(SettingsActivity.this, "Success Uploading.", Toast.LENGTH_LONG).show();
+
                                                 }
+
                                             }
                                         });
-                                    }
-                                    else{
+
+
+                                    } else {
+
+                                        Toast.makeText(SettingsActivity.this, "Error in uploading thumbnail.", Toast.LENGTH_LONG).show();
                                         mProgressDialog.dismiss();
-                                        Toast.makeText(SettingsActivity.this, "Error is uploading thumb fail", Toast.LENGTH_SHORT).show();
+
                                     }
+
 
                                 }
                             });
-                        }else{
+
+
+
+                        } else {
+
+                            Toast.makeText(SettingsActivity.this, "Error in uploading.", Toast.LENGTH_LONG).show();
                             mProgressDialog.dismiss();
-                            Toast.makeText(SettingsActivity.this, "Error is uploading", Toast.LENGTH_SHORT).show();
+
                         }
+
                     }
                 });
 
+
+
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+
                 Exception error = result.getError();
+
             }
         }
 
 
     }
 
-    private void AnhXa(){
-        mDisplayImage = findViewById(R.id.settings_image);
-        mName = findViewById(R.id.settings_display_name);
-        mStatus = findViewById(R.id.settings_status);
-        mStatusBtn = findViewById(R.id.settings_status_btn);
-        mImageBtn = findViewById(R.id.settings_image_btn);
-        mImageStorage = FirebaseStorage.getInstance().getReference();
-    }
-//
-//    public static String random(){
-//        Random generaror = new Random();
+
+//    public static String random() {
+//        Random generator = new Random();
 //        StringBuilder randomStringBuilder = new StringBuilder();
-//        int randomLength = generaror.nextInt(100);
-//        char tempChar ;
-//        for(int i=0 ; i < randomLength ; i++){
-//            tempChar = (char) (generaror.nextInt(96) + 32);
+//        int randomLength = generator.nextInt(20);
+//        char tempChar;
+//        for (int i = 0; i < randomLength; i++){
+//            tempChar = (char) (generator.nextInt(96) + 32);
 //            randomStringBuilder.append(tempChar);
 //        }
 //        return randomStringBuilder.toString();
 //    }
+
 
 }

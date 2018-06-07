@@ -29,19 +29,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mAuth = FirebaseAuth.getInstance();
-
         AnhXa();
 
-        if(mAuth.getCurrentUser() != null){
+        mAuth = FirebaseAuth.getInstance();
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("App Chat");
+
+        if (mAuth.getCurrentUser() != null) {
+
 
             mUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
 
         }
 
+        //Tabs
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Chat");
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        mTabLayout.setupWithViewPager(mViewPager);
 
     }
 
@@ -92,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(item.getItemId() == R.id.main_logout_btn){
 
-//            mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
+            mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
 
             FirebaseAuth.getInstance().signOut();
             SendtoStart();
@@ -112,6 +120,13 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        if(item.getItemId() == R.id.main_post_btn){
+
+            Intent settingsIntent = new Intent(MainActivity.this,NewsActivity.class);
+            startActivity(settingsIntent);
+
+        }
+
         return true;
     }
 
@@ -122,6 +137,9 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mTabLayout = findViewById(R.id.main_tabs);
         mTabLayout.setupWithViewPager(mViewPager);
+        mViewPager = findViewById(R.id.main_tabPager);
+        mTabLayout = findViewById(R.id.main_tabs);
+
     }
 
 }

@@ -76,6 +76,16 @@ public class ProfileActivity extends AppCompatActivity {
 
                 Picasso.with(ProfileActivity.this).load(image).placeholder(R.drawable.default_user).into(mProfileImage);
 
+                if(mCurrent_user.getUid().equals(user_id)){
+
+                    mDeclineBtn.setEnabled(false);
+                    mDeclineBtn.setVisibility(View.INVISIBLE);
+
+                    mProfileSendReqBtn.setEnabled(false);
+                    mProfileSendReqBtn.setVisibility(View.INVISIBLE);
+
+                }
+
                 // ---------------------- Danh sach ban / Yeu cau ----------------------
                 mFriendReqDatabase.child(mCurrent_user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -99,9 +109,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                                 mDeclineBtn.setVisibility(View.INVISIBLE);
                                 mDeclineBtn.setEnabled(false);
-
-                                Toast.makeText(ProfileActivity.this, "req_sent", Toast.LENGTH_SHORT).show();
-
 
                             }
                             mProgressDialog.dismiss();
@@ -179,12 +186,14 @@ public class ProfileActivity extends AppCompatActivity {
 
                                 Toast.makeText(ProfileActivity.this, "There Was some Error in Sending request", Toast.LENGTH_SHORT).show();
                                 
+                            } else{
+
+                                current_state = "req_sent";
+                                mProfileSendReqBtn.setText("Cancel Friend Request");
+
                             }
 
                             mProfileSendReqBtn.setEnabled(true);
-
-                            current_state = "req_sent";
-                            mProfileSendReqBtn.setText("Cancel Friend Request");
 
                         }
                     });
@@ -208,7 +217,6 @@ public class ProfileActivity extends AppCompatActivity {
                                     mDeclineBtn.setVisibility(View.INVISIBLE);
                                     mDeclineBtn.setEnabled(false);
 
-                                    Toast.makeText(ProfileActivity.this, "Send Requested", Toast.LENGTH_SHORT).show();
 
                                 }
                             });
