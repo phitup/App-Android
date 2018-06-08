@@ -26,6 +26,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -42,13 +44,21 @@ public class NewsFragment extends Fragment {
 
     private View mMainView;
 
-    private DatabaseReference mUserDatabase , mPostDatabase , mNewsDatabase;
+    private DatabaseReference mUserDatabase , mPostDatabase , mNewsDatabase , mFriendsDatabase;
     private FirebaseAuth mAuth;
 
     private String mCurrent_User_id;
 
     public NewsFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
+
     }
 
     @Override
@@ -72,70 +82,38 @@ public class NewsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        Query conversationQuery = mPostDatabase.orderByChild("status");
+
         FirebaseRecyclerAdapter<News , NewsViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<News, NewsViewHolder>(
 
                 News.class,
                 R.layout.news_posts_layout,
                 NewsViewHolder.class,
-                mPostDatabase
+                mNewsDatabase
 
         ) {
             @Override
-            protected void populateViewHolder(final NewsViewHolder newsViewHolder, News news, int i) {
+            protected void populateViewHolder(NewsViewHolder viewHolder, News model, int position) {
 
-                newsViewHolder.setDate(news.getDate());
-
-                final String list_users_id = getRef(i).getKey();
-
-                mUserDatabase.child(list_users_id).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        final String userName = dataSnapshot.child("name").getValue().toString();
-                        String userThumb = dataSnapshot.child("image").getValue().toString();
-
-                        newsViewHolder.setName(userName);
-                        newsViewHolder.setUserImage(userThumb, getContext());
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-                mNewsDatabase.child(list_users_id).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        final String status = dataSnapshot.child("status").getValue().toString();
-                        String newsThumb = dataSnapshot.child("image").getValue().toString();
-
-                        newsViewHolder.setStatus(status);
-                        newsViewHolder.setNewsImage(newsThumb, getContext());
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                
 
             }
         };
+
         mNewsList.setAdapter(firebaseRecyclerAdapter);
+
     }
 
-    public static class NewsViewHolder extends RecyclerView.ViewHolder{
+
+    public static class NewsViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
 
         public NewsViewHolder(View itemView) {
             super(itemView);
+
             mView = itemView;
+
         }
 
         public void setDate(String date){
@@ -154,26 +132,78 @@ public class NewsFragment extends Fragment {
 
         public void setUserImage(String thumb_image, Context ctx){
 
-            CircleImageView userImageView =  mView.findViewById(R.id.user_news_image);
+            CircleImageView userImageView =  mView.findViewById(R.id.user_single_image);
             Picasso.with(ctx).load(thumb_image).placeholder(R.drawable.default_user).into(userImageView);
 
         }
 
-        public void setNewsImage(String thumb_image, Context ctx){
+        public void setUserOnline(String online_status) {
 
-            ImageView userNewsView =  mView.findViewById(R.id.new_post_image);
-            Picasso.with(ctx).load(thumb_image).placeholder(R.drawable.default_user).into(userNewsView);
+            ImageView userOnlineView =  mView.findViewById(R.id.user_single_online_ioon);
+
+            if(online_status.equals("true")){
+
+                userOnlineView.setVisibility(View.VISIBLE);
+
+            } else {
+
+                userOnlineView.setVisibility(View.INVISIBLE);
+
+            }
 
         }
 
-        public void setStatus(String status){
-
-            TextView txtStatus = mView.findViewById(R.id.user_news_status);
-            txtStatus.setText(status);
-
-        }
 
     }
+
+    // =====================================
+
+//    public static class NwsViewHolder extends RecyclerView.ViewHolder{
+//
+//        View mView;
+//
+//        public NewsViewHolder(View itemView) {
+//            super(itemView);
+//
+//            mView = itemView;
+//        }
+//
+//        public void setDate(String date){
+//
+//            TextView userStatusView =  mView.findViewById(R.id.post_news_time);
+//            userStatusView.setText(date);
+//
+//        }
+//
+//        public void setName(String name){
+//
+//            TextView userNameView =  mView.findViewById(R.id.user_news_name);
+//            userNameView.setText(name);
+//
+//        }
+//
+//        public void setUserImage(String thumb_image, Context ctx){
+//
+//            CircleImageView userImageView =  mView.findViewById(R.id.user_news_image);
+//            Picasso.with(ctx).load(thumb_image).placeholder(R.drawable.default_user).into(userImageView);
+//
+//        }
+//
+//        public void setNewsImage(String thumb_image, Context ctx){
+//
+//            ImageView userNewsView =  mView.findViewById(R.id.new_post_image);
+//            Picasso.with(ctx).load(thumb_image).placeholder(R.drawable.default_user).into(userNewsView);
+//
+//        }
+//
+//        public void setStatus(String status){
+//
+//            TextView txtStatus = mView.findViewById(R.id.user_news_status);
+//            txtStatus.setText(status);
+//
+//        }
+//
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -193,7 +223,10 @@ public class NewsFragment extends Fragment {
         mNewsDatabase = FirebaseDatabase.getInstance().getReference().child("post");
         mNewsDatabase.keepSynced(true);
 
-//        mNewsList = mMainView.findViewById()
+        mFriendsDatabase = FirebaseDatabase.getInstance().getReference().child("Friends").child(mCurrent_User_id);
+        mFriendsDatabase.keepSynced(true);
+
+        mNewsList = mMainView.findViewById(R.id.post_news_list);
         mNewsList.setHasFixedSize(true);
         mNewsList.setLayoutManager(new LinearLayoutManager(getContext()));
 

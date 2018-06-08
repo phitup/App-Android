@@ -23,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -68,8 +69,10 @@ public class NewsActivity extends AppCompatActivity {
         mPostDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 String image = dataSnapshot.child("image").getValue().toString();
                 Picasso.with(NewsActivity.this).load(image).placeholder(R.drawable.add_100).into(image_post_btn);
+
 
             }
 
@@ -83,58 +86,12 @@ public class NewsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String description = editText.getText().toString();
-
-                mPostDatabase.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        String description = editText.getText().toString();
-                        String image = dataSnapshot.child("image").getValue().toString();
-
-                        Map postMap = new HashMap<>();
-                        postMap.put("status" , description);
-                        postMap.put("image" , "image");
-                        postMap.put("thumb_image" , "thumb_image");
-
-                        mPostDatabase.updateChildren(postMap, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-
-                                if(databaseError != null){
-
-                                    Log.d("CHAT_LOG", databaseError.getMessage().toString());
-
-                                }
-
-                            }
-                        });
+                String name = editText.getText().toString();
 
 
 
-
-//                            Picasso.with(NewsActivity.this).load(image).networkPolicy(NetworkPolicy.OFFLINE)
-//                                    .placeholder(R.drawable.default_user).into(mDisplayImage, new Callback() {
-//                                @Override
-//                                public void onSuccess() {
-//
-//                                }
-//
-//                                @Override
-//                                public void onError() {
-//
-//                                    Picasso.with(NewsActivity.this).load(image).placeholder(R.drawable.default_user).into(mDisplayImage);
-//
-//                                }
-//                            });
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                Picasso.with(NewsActivity.this).load(R.drawable.add_100).into(image_post_btn);
+                mPostDatabase.child("status").setValue(name);
 
             }
         });
@@ -152,7 +109,23 @@ public class NewsActivity extends AppCompatActivity {
             }
         });
 
+        Map postMap = new HashMap<>();
+        postMap.put("status" , "status");
+        postMap.put("image" , "image");
+        postMap.put("timestamp" , ServerValue.TIMESTAMP);
 
+        mPostDatabase.updateChildren(postMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+                if(databaseError != null){
+
+                    Log.d("CHAT_LOG", databaseError.getMessage().toString());
+
+                }
+
+            }
+        });
 
 
 
@@ -225,7 +198,17 @@ public class NewsActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
 
-                                    mProgressDialog.dismiss();
+                                    if(task.isSuccessful()){
+
+                                        mProgressDialog.dismiss();
+                                        Toast.makeText(NewsActivity.this, "successful", Toast.LENGTH_SHORT).show();
+
+                                    }else{
+
+                                        mProgressDialog.dismiss();
+                                        Toast.makeText(NewsActivity.this, "failed", Toast.LENGTH_SHORT).show();
+
+                                    }
 
                                 }
                             });

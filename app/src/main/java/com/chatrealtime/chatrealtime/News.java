@@ -6,20 +6,20 @@ package com.chatrealtime.chatrealtime;
 
 public class News {
 
-    public String date;
+    public long timestamp;
 
     public News() {
     }
 
-    public News(String date) {
-        this.date = date;
+    public News(long timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public String getDate() {
-        return date;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }
