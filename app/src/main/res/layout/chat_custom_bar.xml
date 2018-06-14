@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:text="Display Name"
+        android:text="@string/chat_custom_bar_display_name"
         android:textColor="@android:color/white"
         android:textSize="18sp" />
 
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/custom_bar_title"
-        android:text="Last Seen"
+        android:text="@string/chat_custom_bar_last_seen"
         android:textColor="@android:color/white"
         android:textSize="13sp" />
 

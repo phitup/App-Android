@@ -1,19 +1,30 @@
 package com.chatrealtime.chatrealtime;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,12 +34,13 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private TabLayout mTabLayout;
     private DatabaseReference mUserRef;
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         AnhXa();
 
         mAuth = FirebaseAuth.getInstance();
@@ -64,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         }else{
             mUserRef.child("online").setValue("true");
         }
+
+
+
 
     }
 
@@ -120,14 +135,53 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        if(item.getItemId() == R.id.main_post_btn){
+        if(item.getItemId() == R.id.main_language_btn){
 
-            Intent settingsIntent = new Intent(MainActivity.this,NewsActivity.class);
-            startActivity(settingsIntent);
+            final AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+            View mView = getLayoutInflater().inflate(R.layout.dialog_language , null);
+
+            mView.findViewById(R.id.VietNam).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    ChangeLanguage("vi");
+
+                }
+            });
+
+            mView.findViewById(R.id.USA).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+
+                    ChangeLanguage("en");
+
+
+                }
+            });
+
+            mBuilder.setView(mView);
+            AlertDialog dialog = mBuilder.create();
+            dialog.show();
 
         }
 
         return true;
+    }
+
+    public void ChangeLanguage(String Language){
+
+        Locale locale = new Locale(Language);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(
+                config,
+                getBaseContext().getResources().getDisplayMetrics()
+        );
+
+        Intent inten = new Intent(MainActivity.this , MainActivity.class);
+        startActivity(inten);
+
     }
 
     private void AnhXa(){

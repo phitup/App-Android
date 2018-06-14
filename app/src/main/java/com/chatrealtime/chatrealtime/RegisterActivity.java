@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -39,12 +40,14 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         mAuth = FirebaseAuth.getInstance();
 
         AnhXa();
 
         // set background
-        registerScreen.setBackgroundResource(R.drawable.background);
+        registerScreen.setBackgroundResource(R.drawable.bgstart);
 
         // set Toolbar
         setSupportActionBar(mToolbar);

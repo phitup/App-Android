@@ -39,7 +39,7 @@ class SectionsPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position){
         switch (position){
             case 0:
-                return "News";
+                return "NEWS";
             case 1:
                 return "CHAT";
             case 2:

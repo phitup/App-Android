@@ -20,7 +20,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="30dp"
         android:layout_toRightOf="@id/user_single_image"
-        android:text="Display Name"
+        android:text="@string/news_posts_layout_display_name"
         android:textSize="17sp"
         android:textStyle="bold" />
 
@@ -31,7 +31,7 @@
         android:layout_alignBottom="@+id/user_single_image"
         android:layout_alignStart="@+id/user_single_name"
         android:layout_marginBottom="16dp"
-        android:text="User default status"
+        android:text="@string/news_posts_layout_user_default_status"
         android:textSize="14sp" />
 
     <ImageView

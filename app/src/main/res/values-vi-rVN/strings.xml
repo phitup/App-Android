@@ -1,2 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_name">ChatRealTime</string>
+    <string name="log_out">Đăng Xuất</string>
+    <string name="Enter_Message">Tin Nhắn</string>
+    <string name="Login_Password">Mật Khẩu</string>
+    <string name="btnLogin">Đăng Nhập</string>
+    <string name="News_Status">Thêm dòng trạng thái</string>
+    <string name="News_Post_Blog">Đăng Bài</string>
+    <string name="Profile_SEND_FRIEND_REQUEST">KẾT BẠN</string>
+    <string name="Profile_DECLINE_FRIEND_REQUEST">TỪ CHỐI KẾT BẠN</string>
+    <string name="Register_Name">Tên</string>
+    <string name="Register_Password">Mật Khẩu</string>
+    <string name="Register_Text">Đăng Ký</string>
+    <string name="Register_Create_a_new_account">Tạo 1 Tài Khoản Mới</string>
+    <string name="Settings_display_name">Tên</string>
+    <string name="Settings_change_status">ĐỔI TRẠNG THÁI</string>
+    <string name="Settings_change_image">THAY ĐỔI ẢNH</string>
+    <string name="Settings_hello">Chào mừng đến với Tài Khoản của bạn</string>
+    <string name="start_login">Đăng Nhập Tài Khoản Của Bạn</string>
+    <string name="start_register">Tạo 1 Tài Khoản</string>
+    <string name="status_your_status">Trạng Thái Của Bạn</string>
+    <string name="status_save_change">Lưu Thay Đổi</string>
+    <string name="video_call_start">Bắt đầu</string>
+    <string name="video_call_connect">kết nối</string>
+    <string name="video_call_disconnect">ngắt kết nối</string>
+    <string name="chat_custom_bar_display_name">Tên</string>
+    <string name="chat_custom_bar_last_seen">xem</string>
+    <string name="message_single_layout_display_name">Tên</string>
+    <string name="message_single_layout_message_text">Tin Nhắn</string>
+    <string name="news_posts_layout_display_name">Tên</string>
+    <string name="news_posts_layout_user_default_status">Trạng Thái</string>
+    <string name="menu_account_settings">THÔNG TIN CÁ NHÂN</string>
+    <string name="menu_all_masters">CHUYÊN GIA</string>
+    <string name="menu_logout">ĐĂNG XUẤT</string>
+    <string name="menu_language">THAY ĐỔI NGÔN NGỮ</string>
+</resources>

@@ -36,7 +36,7 @@
         android:layout_marginLeft="10dp"
         android:ems="10"
         android:inputType="textMultiLine"
-        android:hint="Add Description ..."
+        android:hint="@string/News_Status"
         android:padding="15dp"
         />
 
@@ -50,7 +50,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/colorAccent"
-        android:text="POST BLOG"
+        android:text="@string/News_Post_Blog"
         android:textAllCaps="false"
         android:textColor="#FFF"
         android:textSize="18sp"

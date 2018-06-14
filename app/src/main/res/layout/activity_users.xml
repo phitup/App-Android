@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.chatrealtime.chatrealtime.UsersActivity">
 
-    <include layout="@layout/app_bar_layout" android:id="@+id/users_appBar"/>
+    <include layout="@layout/app_bar_layout_color" android:id="@+id/users_appBar"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/users_list"

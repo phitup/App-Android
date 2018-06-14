@@ -4,14 +4,14 @@
 
     <item
         android:id="@+id/main_settings_btn"
-        android:title="Account Settings" />
+        android:title="@string/menu_account_settings" />
     <item
         android:id="@+id/main_all_btn"
-        android:title="All Users" />
+        android:title="@string/menu_all_masters" />
+    <item
+        android:id="@+id/main_language_btn"
+        android:title="@string/menu_language" />
     <item
         android:id="@+id/main_logout_btn"
-        android:title="@string/log_out" />
-    <item
-        android:id="@+id/main_post_btn"
-        android:title="POST" />
+        android:title="@string/menu_logout" />
 </menu>

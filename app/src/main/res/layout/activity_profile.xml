@@ -26,7 +26,7 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="20dp"
         android:textColor="#FFF"
-        android:text="Display Name"
+        android:text="@string/news_posts_layout_display_name"
         android:textSize="30sp"/>
 
     <TextView
@@ -38,7 +38,7 @@
         android:layout_marginTop="11dp"
         android:textColor="#FFF"
         android:textSize="20sp"
-        android:text="Current User Status" />
+        android:text="@string/news_posts_layout_user_default_status" />
 
     <TextView
         android:id="@+id/profile_totalFriends"
@@ -49,7 +49,7 @@
         android:layout_marginTop="70dp"
         android:textColor="#FFF"
         android:textSize="15sp"
-        android:text="Total Friends" />
+        android:text="" />
 
     <Button
         android:id="@+id/profile_send_req_btn"
@@ -61,7 +61,7 @@
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFF"
         android:padding="15dp"
-        android:text="SEND FRIEND REQUEST" />
+        android:text="@string/Profile_SEND_FRIEND_REQUEST" />
 
     <Button
         android:id="@+id/profile_decline_req_btn"
@@ -73,6 +73,6 @@
         android:background="#f12"
         android:textColor="#FFF"
         android:padding="15dp"
-        android:text="DECLINE FRIEND REQUEST"
+        android:text="@string/Profile_DECLINE_FRIEND_REQUEST"
         />
 </RelativeLayout>

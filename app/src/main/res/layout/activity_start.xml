@@ -7,16 +7,14 @@
     android:layout_height="match_parent"
     tools:context="com.chatrealtime.chatrealtime.StartActivity">
 
-    <TextView
+    <ImageView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Welcome to Phi Tup Chat"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:textColor="#FFF"/>
+        android:layout_marginTop="60dp"
+        android:src="@drawable/logo"
+        />
 
     <Button
         android:id="@+id/buttonLogin"
@@ -24,10 +22,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="29dp"
-        android:background="#ed0617"
+        android:layout_marginTop="159dp"
+        android:background="@drawable/button"
+
         android:padding="20dp"
-        android:text="LOGIN TO YOUR ACCOUNT"
+        android:text="@string/start_login"
         android:textColor="#FFF"
         android:textStyle="bold" />
 
@@ -38,9 +37,9 @@
         android:layout_below="@+id/buttonLogin"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:background="#884dd6"
+        android:background="@drawable/button2"
         android:padding="20dp"
-        android:text="Need A NEW ACCOUNT"
+        android:text="@string/start_register"
         android:textColor="#FFF"
         android:textStyle="bold" />
 </RelativeLayout>

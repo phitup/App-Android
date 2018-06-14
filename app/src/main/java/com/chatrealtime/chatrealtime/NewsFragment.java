@@ -16,12 +16,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,6 +50,9 @@ public class NewsFragment extends Fragment {
     private FirebaseAuth mAuth;
 
     private String mCurrent_User_id;
+
+    private Map postMap;
+
 
     public NewsFragment() {
         // Required empty public constructor
@@ -82,9 +87,10 @@ public class NewsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        Query conversationQuery = mPostDatabase.orderByChild("status");
 
-        FirebaseRecyclerAdapter<News , NewsViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<News, NewsViewHolder>(
+        Query conversationQuery = mPostDatabase.orderByChild("status");
+        mNewsDatabase = FirebaseDatabase.getInstance().getReference().child("post").child(mCurrent_User_id).child("status");
+        final FirebaseRecyclerAdapter<News , NewsViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<News, NewsViewHolder>(
 
                 News.class,
                 R.layout.news_posts_layout,
@@ -93,14 +99,54 @@ public class NewsFragment extends Fragment {
 
         ) {
             @Override
-            protected void populateViewHolder(NewsViewHolder viewHolder, News model, int position) {
+            protected void populateViewHolder(final NewsViewHolder viewHolder, News model, int position) {
 
-                
+
+
+
+                mNewsDatabase.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        News news;
+
+                        news = dataSnapshot.getValue(News.class);
+
+                        viewHolder.setStatus(news.getStatus());
+
+
+                        viewHolder.setUserImage(news.getImage(),getContext());
+
+//                        Picasso.with(getContext()).load(news.getImage()).placeholder(R.drawable.add_100).into();
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
             }
         };
 
         mNewsList.setAdapter(firebaseRecyclerAdapter);
+
+        mNewsDatabase = FirebaseDatabase.getInstance().getReference().child("post").child(mCurrent_User_id).child("status");
+       mNewsDatabase.addValueEventListener(new ValueEventListener() {
+           @Override
+           public void onDataChange(DataSnapshot dataSnapshot) {
+               String status = dataSnapshot.getValue().toString();
+//               Toast.makeText(getContext(), "Hello: "+status, Toast.LENGTH_SHORT).show();
+           }
+
+           @Override
+           public void onCancelled(DatabaseError databaseError) {
+
+           }
+       });
+
 
     }
 
@@ -130,6 +176,13 @@ public class NewsFragment extends Fragment {
 
         }
 
+        public void setStatus(String status){
+
+            TextView userStatus = mView.findViewById(R.id.user_news_status);
+            userStatus.setText(status);
+
+        }
+
         public void setUserImage(String thumb_image, Context ctx){
 
             CircleImageView userImageView =  mView.findViewById(R.id.user_single_image);
@@ -156,55 +209,6 @@ public class NewsFragment extends Fragment {
 
     }
 
-    // =====================================
-
-//    public static class NwsViewHolder extends RecyclerView.ViewHolder{
-//
-//        View mView;
-//
-//        public NewsViewHolder(View itemView) {
-//            super(itemView);
-//
-//            mView = itemView;
-//        }
-//
-//        public void setDate(String date){
-//
-//            TextView userStatusView =  mView.findViewById(R.id.post_news_time);
-//            userStatusView.setText(date);
-//
-//        }
-//
-//        public void setName(String name){
-//
-//            TextView userNameView =  mView.findViewById(R.id.user_news_name);
-//            userNameView.setText(name);
-//
-//        }
-//
-//        public void setUserImage(String thumb_image, Context ctx){
-//
-//            CircleImageView userImageView =  mView.findViewById(R.id.user_news_image);
-//            Picasso.with(ctx).load(thumb_image).placeholder(R.drawable.default_user).into(userImageView);
-//
-//        }
-//
-//        public void setNewsImage(String thumb_image, Context ctx){
-//
-//            ImageView userNewsView =  mView.findViewById(R.id.new_post_image);
-//            Picasso.with(ctx).load(thumb_image).placeholder(R.drawable.default_user).into(userNewsView);
-//
-//        }
-//
-//        public void setStatus(String status){
-//
-//            TextView txtStatus = mView.findViewById(R.id.user_news_status);
-//            txtStatus.setText(status);
-//
-//        }
-//
-//    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -214,13 +218,14 @@ public class NewsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mCurrent_User_id = mAuth.getCurrentUser().getUid();
 
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrent_User_id);
         mUserDatabase.keepSynced(true);
 
         mPostDatabase = FirebaseDatabase.getInstance().getReference().child("post").child(mCurrent_User_id);
         mPostDatabase.keepSynced(true);
 
         mNewsDatabase = FirebaseDatabase.getInstance().getReference().child("post");
+//        mNewsDatabase = FirebaseDatabase.getInstance().getReference().child("post").child(mCurrent_User_id).child("status");
         mNewsDatabase.keepSynced(true);
 
         mFriendsDatabase = FirebaseDatabase.getInstance().getReference().child("Friends").child(mCurrent_User_id);
@@ -229,6 +234,24 @@ public class NewsFragment extends Fragment {
         mNewsList = mMainView.findViewById(R.id.post_news_list);
         mNewsList.setHasFixedSize(true);
         mNewsList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        postMap = new HashMap<>();
+        postMap.put("status" , "status");
+        postMap.put("image" , "image");
+        postMap.put("timestamp" , ServerValue.TIMESTAMP);
+
+        mPostDatabase.updateChildren(postMap, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+
+                if(databaseError != null){
+
+                    Log.d("CHAT_LOG", databaseError.getMessage().toString());
+
+                }
+
+            }
+        });
 
         return mMainView;
     }

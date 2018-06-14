@@ -6,13 +6,33 @@ package com.chatrealtime.chatrealtime;
 
 public class News {
 
-    public long timestamp;
+    private String image;
+    private String status;
+    private long timestamp;
 
     public News() {
     }
 
-    public News(long timestamp) {
+    public News(String image, String status, long timestamp) {
+        this.image = image;
+        this.status = status;
         this.timestamp = timestamp;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public long getTimestamp() {

@@ -108,27 +108,6 @@ public class NewsActivity extends AppCompatActivity {
 
             }
         });
-
-        Map postMap = new HashMap<>();
-        postMap.put("status" , "status");
-        postMap.put("image" , "image");
-        postMap.put("timestamp" , ServerValue.TIMESTAMP);
-
-        mPostDatabase.updateChildren(postMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-
-                if(databaseError != null){
-
-                    Log.d("CHAT_LOG", databaseError.getMessage().toString());
-
-                }
-
-            }
-        });
-
-
-
     }
 
     @Override
